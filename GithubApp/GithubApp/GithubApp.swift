@@ -11,7 +11,7 @@ struct GithubApp: App {
                 store: .init(initialState: RootReducer.State()) {
                     RootReducer().transformDependency(\.self) { dependency in
                         let gitHubPAT: String? = nil
-                        dependency.userClient = .live(token: gitHubPAT)
+                        dependency.githubClient = .live()
                     }
                 }
             )

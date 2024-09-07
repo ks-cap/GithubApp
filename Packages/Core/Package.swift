@@ -4,28 +4,30 @@
 import PackageDescription
 
 extension Target.Dependency {
-    static var core: Self { .product(name: "Core", package: "Core") }
-    static var dependencies: Self { .product(name: "Dependencies", package: "swift-dependencies") }
+    static var dependencies: Self {
+        .product(name: "Dependencies", package: "swift-dependencies")
+    }
+    static var dependenciesMacros: Self {
+        .product(name: "DependenciesMacros", package: "swift-dependencies")
+    }
 }
 
 let package = Package(
-    name: "GithubAPI",
+    name: "Core",
     platforms: [.iOS(.v17)],
     products: [
-        .library(name: "GithubAPI", targets: ["GithubAPI"])
+        .library(name: "Core", targets: ["Core"])
     ],
     dependencies: [
-        // Internal dependencies
-        .package(path: "../Core"),
         // External dependencies
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.3.9")
     ],
     targets: [
         .target(
-            name: "GithubAPI",
+            name: "Core",
             dependencies: [
-                .core,
-                .dependencies
+                .dependencies,
+                .dependenciesMacros
             ]
         )
     ]

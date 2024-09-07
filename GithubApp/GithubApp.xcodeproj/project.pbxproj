@@ -10,7 +10,7 @@
 		D547E3012C034534000BF1D9 /* GithubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D547E3002C034534000BF1D9 /* GithubApp.swift */; };
 		D547E3052C034536000BF1D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D547E3042C034536000BF1D9 /* Assets.xcassets */; };
 		D547E3082C034536000BF1D9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D547E3072C034536000BF1D9 /* Preview Assets.xcassets */; };
-		D5EE13F22C84B507004576E1 /* App in Frameworks */ = {isa = PBXBuildFile; productRef = D5EE13F12C84B507004576E1 /* App */; };
+		D5A63A642C8C98C600C85F86 /* Root in Frameworks */ = {isa = PBXBuildFile; productRef = D5A63A632C8C98C600C85F86 /* Root */; };
 		D5EE13F42C84BD70004576E1 /* GithubAPI in Frameworks */ = {isa = PBXBuildFile; productRef = D5EE13F32C84BD70004576E1 /* GithubAPI */; };
 /* End PBXBuildFile section */
 
@@ -26,8 +26,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D5A63A642C8C98C600C85F86 /* Root in Frameworks */,
 				D5EE13F42C84BD70004576E1 /* GithubAPI in Frameworks */,
-				D5EE13F22C84B507004576E1 /* App in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,8 +93,8 @@
 			);
 			name = GithubApp;
 			packageProductDependencies = (
-				D5EE13F12C84B507004576E1 /* App */,
 				D5EE13F32C84BD70004576E1 /* GithubAPI */,
+				D5A63A632C8C98C600C85F86 /* Root */,
 			);
 			productName = GithubApp;
 			productReference = D547E2FD2C034534000BF1D9 /* GithubApp.app */;
@@ -302,6 +302,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = KSCap.GithubApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -332,6 +335,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = KSCap.GithubApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -362,9 +368,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D5EE13F12C84B507004576E1 /* App */ = {
+		D5A63A632C8C98C600C85F86 /* Root */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = App;
+			productName = Root;
 		};
 		D5EE13F32C84BD70004576E1 /* GithubAPI */ = {
 			isa = XCSwiftPackageProductDependency;

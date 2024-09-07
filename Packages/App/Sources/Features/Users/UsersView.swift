@@ -1,5 +1,6 @@
+import Common
 import ComposableArchitecture
-import GithubAPI
+import Core
 import SwiftUI
 
 public struct UsersView: View {
@@ -10,41 +11,26 @@ public struct UsersView: View {
     }
 
     public var body: some View {
-        NavigationStack {
+        AsyncContentView(state: store.contentState) { users in
             List {
-                ForEach(store.users) { user in
-                    UserSummaryView(user: user)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            store.send(.userTapped(user))
-                        }
-                        .onAppear {
-                            if check(user: user) {
-                                store.send(.fetch(lastUserId: user.id))
-                            }
-                        }
+                ForEach(users) { user in
+                    Button {
+                      store.send(.delegate(.userTapped(user)))
+                    } label: {
+                        UserSummaryView(user: user)
+                    }
                 }
             }
-            .alert($store.scope(state: \.destination?.alert, action: \.destination.alert))
-            .navigationTitle("Github Users List")
             .refreshable {
                 store.send(.refresh)
             }
+        } onRetryTapped: {
+            store.send(.retryTapped)
         }
         .task {
-            store.send(.fetch())
+            await store.send(.onAppear).finish()
         }
-        .sheet(
-            item: $store.scope(state: \.destination?.user, action: \.destination.user)
-        ) { store in
-            NavigationStack {
-                UserView(store: store)
-            }
-        }
-    }
-    
-    private func check(user: UserSummary) -> Bool {
-        store.users.last?.id == user.id
+        .navigationTitle("Github Users List")
     }
 }
 

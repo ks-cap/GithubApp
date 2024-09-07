@@ -1,81 +1,62 @@
+import Common
 import ComposableArchitecture
-import GithubAPI
+import Core
 
 @Reducer
 public struct UsersReducer {
-    public init() {}
-
-    @Reducer
-    public enum Destination {
-        case alert(AlertState<Never>)
-        case user(UserReducer)
-    }
-
     @ObservableState
     public struct State {
-        var users: [UserSummary] = []
-        @Presents var destination: Destination.State?
-        @Presents var user: UserReducer.State?
+        var contentState: AsyncLoadingState<[UserSummary]> = .loading
         
         public init() {}
     }
     
     public enum Action {
-        case destination(PresentationAction<Destination.Action>)
-        case userTapped(UserSummary)
-        case fetch(lastUserId: Int? = nil)
-        case fetchResponse(Result<[UserSummary], Error>)
+        public enum Delegate {
+          case userTapped(UserSummary)
+        }
+
+        case delegate(Delegate)
+        case onAppear
+        case fetch
+        case fetched(Result<[UserSummary], Error>)
         case refresh
-        case refreshResponse(Result<[UserSummary], Error>)
+        case retryTapped
     }
     
     @Dependency(\.githubClient) var githubClient
     
+    public init() {}
+
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .destination:
+            case .delegate:
                 return .none
 
-            case .userTapped(let user):
-                state.destination = .user(UserReducer.State(username: user.username))
-                return .none
+            case .onAppear, .retryTapped:
+                return .send(.fetch)
 
-            case .fetch(let lastUserId):
+            case .fetch, .refresh:
+                state.contentState = .loading
+                
                 return .run { send in
-                    await send(.fetchResponse(
-                        Result {
-                            try await self.githubClient.fetchUsers(lastUserId)
-                        }
-                    ))
+                    let users = try await githubClient.fetchUsers()
+                    await send(.fetched(.success(users)))
+                } catch: { error, send in
+                    await send(.fetched(.failure(error)))
                 }
-
-            case .fetchResponse(.success(let users)):
-                if state.users.isEmpty {
-                    state.users = users
-                } else {
-                    state.users.append(contentsOf: users)
+               
+            case let .fetched(result):
+                switch result {
+                case let .success(users):
+                    state.contentState = .success(users)
+                    return .none
+                    
+                case .failure:
+                    state.contentState = .failure
+                    return .none
                 }
-                return .none
-
-            case .refresh:
-                return .run { send in
-                    await send(.refreshResponse(
-                        Result { try await self.githubClient.fetchUsers(nil) }
-                    ))
-                }
-
-            case .refreshResponse(.success(let users)):
-                state.users = users
-                return .none
-
-            case .fetchResponse(.failure(let error)), .refreshResponse(.failure(let error)):
-                state.destination = .alert(
-                    AlertState {
-                        TextState(error.localizedDescription)
-                    }
-                )
-                return .none
             }
         }
     }

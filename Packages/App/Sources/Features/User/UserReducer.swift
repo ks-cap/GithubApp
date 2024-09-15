@@ -4,6 +4,6 @@ import ComposableArchitecture
 public struct UserReducer {
     @ObservableState
     public struct State: Equatable {
-        var username: String
+        var userName: String
     }
 }

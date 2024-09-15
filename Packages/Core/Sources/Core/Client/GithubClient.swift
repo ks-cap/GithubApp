@@ -4,7 +4,7 @@ import Foundation
 
 @DependencyClient
 public struct GithubClient: Sendable {
-    public var fetchUsers: @Sendable () async throws -> [UserSummary]
+    public var fetchUsers: @Sendable () async throws -> [User]
 }
 
 extension GithubClient: TestDependencyKey {
@@ -12,14 +12,14 @@ extension GithubClient: TestDependencyKey {
         .init(
             fetchUsers: {
                 try await Task.sleep(nanoseconds: NSEC_PER_SEC)
-                return (0 ..< 20).map { .mock(id: $0, name: "MockUser\($0)") }
+                return (0 ..< 20).map { .mock(id: $0, userName: "MockUser\($0)") }
             }
         )
     }
 
     public static var testValue = Self.init(
         fetchUsers: {
-            (0 ..< 20).map { .mock(id: $0, name: "MockUser\($0)") }
+            (0 ..< 20).map { .mock(id: $0, userName: "MockUser\($0)") }
         }
     )
 }
@@ -31,12 +31,12 @@ extension DependencyValues {
     }
 }
 
-public extension UserSummary {
+public extension User {
     static func mock(
         id: Int = 1,
-        name: String = "MockUser01",
-        avatarImage: String = "https://placehold.jp/150x150.png"
+        userName: String = "MockUser01",
+        avatarUrlString: String = "https://placehold.jp/150x150.png"
     ) -> Self {
-        .init(id: id, username: name, avatarImage: avatarImage)
+        .init(id: id, userName: userName, avatarUrlString: avatarUrlString)
     }
 }

@@ -2,17 +2,23 @@ import Core
 import Dependencies
 import Foundation
 
-extension GithubClient {
-    public static func live() -> GithubClient {
-        .init(
+public extension GithubClient {
+    static func live(token: String?) -> GithubClient {
+        let header: [String: String]
+        if let token, !token.isEmpty {
+            header = ["Authorization": "Bearer \(token)"]
+        } else {
+            header = [:]
+        }
+
+        return .init(
             fetchUsers: {
-                let components = URLComponents(string: "https://api.github.com/users")!
-                var request = URLRequest(url: components.url!)
-                request.httpMethod = "GET"
-                request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-    //            request.setValue("Bearer \(Secret.token)", forHTTPHeaderField: "Authorization")
-                let (data, _) = try await URLSession.shared.data(for: request)
-                return try JSONDecoder().decode([UserSummary].self, from: data)
+                let request = NetworkRequest(
+                    urlString: "https://api.github.com/users",
+                    httpMethod: .get,
+                    header: header
+                )
+                return try await NetworkManager.request(request)
             }
         )
     }
@@ -23,8 +29,4 @@ public extension DependencyValues {
         get { self[GithubClient.self] }
         set { self[GithubClient.self] = newValue }
     }
-}
-
-enum Secret {
-    static let token = ""
 }

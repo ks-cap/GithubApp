@@ -11,42 +11,49 @@ public struct UsersView: View {
     }
 
     public var body: some View {
-        AsyncContentView(state: store.contentState) { users in
+        AsyncContentView(state: store.viewState) { users in
             List {
                 ForEach(users) { user in
                     Button {
                       store.send(.delegate(.userTapped(user)))
                     } label: {
-                        UserSummaryView(user: user)
+                        UserView(user: user)
                     }
                 }
-            }
-            .refreshable {
-                store.send(.refresh)
             }
         } onRetryTapped: {
             store.send(.retryTapped)
         }
         .task {
-            await store.send(.onAppear).finish()
+            store.send(.onAppear)
         }
         .navigationTitle("Github Users List")
     }
 }
 
-private struct UserSummaryView: View {
-    let user: UserSummary
+private struct UserView: View {
+    let user: User
 
     var body: some View {
         HStack {
-            AsyncImage(url: .init(string: user.avatarImage)!) {
-                $0.image?.resizable()
-            }
-            .clipShape(Circle())
+            AvatarView(url: user.avatarUrl)
             .frame(width: 50, height: 50)
 
-            Text(user.username)
+            Text(user.userName)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+}
+
+private struct AvatarView: View {
+    let url: URL
+
+    var body: some View {
+        AsyncImage(url: url) { image in
+            image.resizable()
+        } placeholder: {
+            ProgressView()
+        }
+        .clipShape(Circle())
     }
 }

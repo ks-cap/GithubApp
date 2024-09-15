@@ -20,7 +20,7 @@ let package = Package(
     ],
     dependencies: [
         // External dependencies
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.3.9")
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.4.0")
     ],
     targets: [
         .target(

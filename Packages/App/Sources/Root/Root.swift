@@ -5,7 +5,7 @@ import Users
 @Reducer
 public struct RootReducer {
     public init() {}
-    
+
     @Reducer
     public enum Path {}
 
@@ -13,8 +13,6 @@ public struct RootReducer {
     public struct State {
         var users: UsersReducer.State = .init()
         var path = StackState<Path.State>()
-        
-        public init() {}
     }
     
     public enum Action {
@@ -23,12 +21,17 @@ public struct RootReducer {
     }
 
     public var body: some ReducerOf<Self> {
+        Scope(state: \.users, action: \.users) {
+            UsersReducer()
+        }
+        
         Reduce { state, action in
             switch action {
             case .users, .path:
                 return .none
             }
         }
+        .forEach(\.path, action: \.path)
     }
 }
 

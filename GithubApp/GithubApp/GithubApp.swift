@@ -10,8 +10,8 @@ struct GithubApp: App {
             RootView(
                 store: .init(initialState: RootReducer.State()) {
                     RootReducer().transformDependency(\.self) { dependency in
-                        let gitHubPAT: String? = nil
-                        dependency.githubClient = .live()
+                        let token = Bundle.main.infoDictionary?["GithubAccessToken"] as? String
+                        dependency.githubClient = .live(token: token)
                     }
                 }
             )

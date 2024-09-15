@@ -48,7 +48,7 @@ let package = Package(
         // Internal dependencies
         .package(name: "Core", path: "../Core"),
         // External dependencies
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.14.0")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.15.0")
     ],
     targets: targets
 )

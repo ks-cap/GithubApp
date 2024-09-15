@@ -6,21 +6,20 @@ import Core
 public struct UsersReducer {
     @ObservableState
     public struct State {
-        var contentState: AsyncLoadingState<[UserSummary]> = .loading
+        var viewState: AsyncLoadingState<[User]> = .loading
         
         public init() {}
     }
     
     public enum Action {
         public enum Delegate {
-          case userTapped(UserSummary)
+          case userTapped(User)
         }
 
         case delegate(Delegate)
         case onAppear
         case fetch
-        case fetched(Result<[UserSummary], Error>)
-        case refresh
+        case fetched(Result<[User], Error>)
         case retryTapped
     }
     
@@ -37,8 +36,8 @@ public struct UsersReducer {
             case .onAppear, .retryTapped:
                 return .send(.fetch)
 
-            case .fetch, .refresh:
-                state.contentState = .loading
+            case .fetch:
+                state.viewState = .loading
                 
                 return .run { send in
                     let users = try await githubClient.fetchUsers()
@@ -50,11 +49,11 @@ public struct UsersReducer {
             case let .fetched(result):
                 switch result {
                 case let .success(users):
-                    state.contentState = .success(users)
+                    state.viewState = .success(users)
                     return .none
                     
                 case .failure:
-                    state.contentState = .failure
+                    state.viewState = .failure
                     return .none
                 }
             }
